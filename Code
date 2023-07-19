@@ -1,0 +1,6 @@
+soma = 3 + 3
+subtracao = 3 - 3
+multiplicacao = 3 * 3
+divisao = 3 / 3
+divisao_inteira = 4 // 3
+potencia = 3 ** 3
