@@ -1,0 +1,45 @@
+from pyzbar.pyzbar import decode
+from pdf2image import convert_from_path
+import os
+import openpyxl
+ 
+
+def BarcodeReader(pdf_path, excel_file):
+    images = convert_from_path(pdf_path, 500)  # Converte o PDF em imagens
+
+    for i, image in enumerate(images):
+        detected_barcodes = decode(image)  # Lê os códigos de barras na imagem
+        print(f"Arquivo {pdf_path}, Página {i + 1}:")
+
+        if not detected_barcodes:
+            print("Nenhum código de barras encontrado nesta página.")
+
+        else:
+            for barcode in detected_barcodes:
+                tipo = barcode.type
+                dado = barcode.data.decode('utf-8')
+                excel_file.append([pdf_path, f"Página {i + 1}", tipo, dado])
+
+if __name__ == '__main__':
+
+    # Lista apenas os arquivos PDF na pasta 'Boletos'
+
+    pdfs = [i for i in os.listdir('Boletos') if i.endswith('.pdf')]
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+    worksheet.append(["Arquivo PDF", "Página",
+                     "Tipo de Código de Barras", "Dado do Código de Barras"])
+
+ 
+
+    for pdf in pdfs:
+        # Caminho completo para o arquivo PDF
+        pdf_path = os.path.join('Boletos', pdf)
+        # Chama a função para cada arquivo PDF na pasta 'Boletos'
+        BarcodeReader(pdf_path, worksheet)
+
+
+    # Salve o arquivo Excel
+    workbook.save("resultados.xlsx")
+
+ 
