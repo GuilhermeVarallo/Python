@@ -15,3 +15,13 @@ def duplicates_emails(person: pd.DataFrame) -> pd.DataFrame:
     results = person.loc[person.duplicated(subset=['email']), ['email']]
     unique_results = results.drop_duplicates()
     return unique_results
+
+
+### eliminate duplicates keeping the smallest id
+
+import pandas as pd
+
+def delete_duplicate_emails(person: pd.DataFrame) -> pd.DataFrame:
+    person.sort_values(by='id', ascending=True, inplace=True)
+    person.drop_duplicates(subset='email', keep='first', inplace=True)
+    person.reset_index(drop=True, inplace=True)
