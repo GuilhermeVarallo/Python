@@ -1,0 +1,45 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import pandas as pd
+import time
+from selenium import webdriver
+
+df = pd.read_excel('')
+
+url = ''
+
+chrome = webdriver.Chrome()
+chrome.get(url)
+time.sleep(5)
+campo_login = chrome.find_element(By.XPATH, '')
+campo_login.click()
+digitar_login = chrome.find_element(By.XPATH, '')
+digitar_login.send_keys('')
+digitar_senha = chrome.find_element(By.XPATH, '')
+digitar_senha.send_keys('')
+logar = chrome.find_element(By.XPATH, '')
+logar.click()
+time.sleep(3)
+botao_get = chrome.find_element(By.XPATH, '')
+botao_get.click()
+time.sleep(5)
+botao_tryitout = chrome.find_element(By.XPATH, '')
+botao_tryitout.click()
+
+
+for index, row in df.iterrows():
+    print("Index: " + str(index) + "O bene é: " + row['Bene'])
+    digitar_beneficiarioid = chrome.find_element(By.XPATH, '')
+    digitar_beneficiarioid.send_keys(row[''])
+    digitar_tipo = chrome.find_element(By.XPATH, '')
+    digitar_tipo.send_keys(row['Tipo'])
+    digitar_subtipo = chrome.find_element(By.XPATH, '')
+    digitar_subtipo.send_keys(row['SubTipo'])
+    botao_executar = chrome.find_element(By.XPATH, '')
+    botao_executar.click()
+    time.sleep(2)
+    botao_download = chrome.find_element(By.XPATH, '')
+    botao_download.click()
+    digitar_beneficiarioid.clear()
+    digitar_subtipo.clear()
+    digitar_tipo.clear()
