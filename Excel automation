@@ -1,0 +1,176 @@
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill
+from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.utils import column_index_from_string, get_column_letter
+import os
+import pandas as pd
+
+
+caminho_CAMPOR1 = r"(Georreferenciamento) R1 CAMPO-ATUAL.xlsx"
+planilhaCAMPOR1 = load_workbook(filename = r"(Georreferenciamento) R1 CAMPO-ATUAL.xlsx")
+
+caminho_CAMPOR2 = r"(Georreferenciamento) R2 CAMPO-ATUAL.xlsx"
+planilhaCAMPOR2 = load_workbook(filename = r"(Georreferenciamento) R2 CAMPO-ATUAL.xlsx")
+
+
+caminho_CAMPOR3 = r"(Georreferenciamento) R3 CAMPO-ATUAL.xlsx"
+planilhaCAMPOR3 = load_workbook(filename = r"(Georreferenciamento) R3 CAMPO-ATUAL.xlsx")
+
+
+caminho_CAMPOR4 = r"(Georreferenciamento) R4 CAMPO-ATUAL.xlsx"
+planilhaCAMPOR4 = load_workbook(filename = r"(Georreferenciamento) R4 CAMPO-ATUAL.xlsx")
+
+
+caminho_CAMPOR5 = r"(Georreferenciamento) R5 CAMPO-ATUAL.xlsx"
+planilhaCAMPOR5 = load_workbook(filename = r"(Georreferenciamento) R5 CAMPO-ATUAL.xlsx")
+
+caminho_INTERNAR1 = r"(Georreferenciamento) R1.xlsx"
+planilhaINTERNAR1 = load_workbook(filename = r"(Georreferenciamento) R1.xlsx")
+
+caminho_INTERNAR2 = r"(Georreferenciamento) R2.xlsx"
+planilhaINTERNAR2 = load_workbook(filename = r"(Georreferenciamento) R2.xlsx")
+
+caminho_INTERNAR3 = r"(Georreferenciamento) R3.xlsx"
+planilhaINTERNAR3 = load_workbook(filename = r"(Georreferenciamento) R3.xlsx")
+
+caminho_INTERNAR4 = r"(Georreferenciamento) R4.xlsx"
+planilhaINTERNAR4 = load_workbook(filename = r"(Georreferenciamento) R4.xlsx")
+
+caminho_INTERNAR5 = r"(Georreferenciamento) R5.xlsx"
+planilhaINTERNAR5 = load_workbook(filename = r"(Georreferenciamento) R5.xlsx")
+
+
+lista_campo_municipios = ['CAMPO BRUMADINHO','CAMPO IGARAPÉ','CAMPO JUATUBA','CAMPO MÁRIO CAMPOS','CAMPO SÃO JOAQUIM DE BICAS','CAMPO CAETANÓPOLIS','CAMPO ESMERALDAS','CAMPO FLORESTAL','CAMPO FORTUNA DE MINAS','CAMPO MARAVILHAS','CAMPO PAPAGAIOS','CAMPO PARÁ DE MINAS','CAMPO PARAOPEBA','CAMPO PEQUI','CAMPO SÃO JOSÉ DA VARGINHA','CAMPO CURVELO','CAMPO POMPÉU','CAMPO ABAETÉ','CAMPO BIQUINHAS','CAMPO FELIXLÂNDIA (Bianca)','CAMPO MORADA NOVA DE MINAS','CAMPO PAINEIRAS','CAMPO SÃO GONÇALO DO ABAETÉ','CAMPO TRÊS MARIAS'] 
+lista_campo_interna = ['Brumadinho','Igarapé','Juatuba','Mário Campos','Sao Joaquim de Bicas','Caetanópolis','Esmeraldas','Florestal','Fortuna de Minas','Maravilhas','Papagaios','Pará de Minas','Paraopeba','Pequi','Sao José da Varginha','Curvelo','Pompéu','Abaeté','Biquinhas','Felixlandia','Morada Nova de Minas','Paineiras','Sao Gonçalo do Abaeté','Tres Marias'] 
+
+contador = 691
+
+#--------------------------------------------------------------------------------------------------------------------
+
+for i,j in zip(lista_campo_municipios,lista_campo_interna):
+    if i == 'CAMPO BRUMADINHO':
+        sheet_selecionada = planilhaCAMPOR1[i]
+        
+        sheet_selecionada_internas=planilhaINTERNAR1[j] 
+    elif i in ('CAMPO IGARAPÉ','CAMPO JUATUBA','CAMPO MÁRIO CAMPOS','CAMPO SÃO JOAQUIM DE BICAS'):
+        sheet_selecionada = planilhaCAMPOR2[i]
+        
+        sheet_selecionada_internas=planilhaINTERNAR2[j]
+    elif i in ('CAMPO CAETANÓPOLIS','CAMPO ESMERALDAS','CAMPO FLORESTAL','CAMPO FORTUNA DE MINAS','CAMPO MARAVILHAS','CAMPO PAPAGAIOS','CAMPO PARÁ DE MINAS','CAMPO PARAOPEBA','CAMPO PEQUI','CAMPO SÃO JOSÉ DA VARGINHA'):
+        sheet_selecionada = planilhaCAMPOR3[i]
+        
+        sheet_selecionada_internas=planilhaINTERNAR3[j]
+    elif i in ('CAMPO CURVELO','CAMPO POMPÉU'):
+        sheet_selecionada = planilhaCAMPOR4[i]
+        
+        sheet_selecionada_internas=planilhaINTERNAR4[j]
+    elif i in ('CAMPO ABAETÉ','CAMPO BIQUINHAS','CAMPO FELIXLÂNDIA (Bianca)','CAMPO MORADA NOVA DE MINAS','CAMPO PAINEIRAS','CAMPO SÃO GONÇALO DO ABAETÉ','CAMPO TRÊS MARIAS'):
+        sheet_selecionada = planilhaCAMPOR5[i]
+        
+        sheet_selecionada_internas=planilhaINTERNAR5[j]
+
+    caminho_lote = r'Lote_Requerimento_' + str(contador) + '.xlsx'
+    planilhaLote = load_workbook(filename = r'Lote_Requerimento_' + str(contador) + '.xlsx')
+    planilha_lote = planilhaLote['Lote_Requerimento_' + str(contador)]
+
+    for linha in range(2, len(sheet_selecionada['L']) + 1):   
+        
+        nome_origem = sheet_selecionada.cell(row=linha, column=1).value
+        if nome_origem is not None:
+            nome_origem = nome_origem.lower()
+
+        for linha_lote in range(2, planilha_lote.max_row + 1):
+            nome_destino = planilha_lote.cell(row=linha_lote, column=7).value
+            if nome_destino is not None:
+                nome_destino = nome_destino.lower()
+            
+            if nome_origem == nome_destino:
+                planilha_lote.cell(row=linha_lote, column=28).value = "Em Campo"
+
+
+
+    for linha_interna in range(10, len(sheet_selecionada_internas['G']) + 1):
+        status = sheet_selecionada_internas.cell(row=linha_interna, column=28).value
+        if status is None and len(str(linha_interna)) > 3:
+            sheet_selecionada_internas.cell(row=linha_interna, column=28).value = "Não Analisada"
+
+    for linha in range(2, len(sheet_selecionada_internas['G']) + 1):   
+        
+        nome_origem = sheet_selecionada_internas.cell(row=linha, column=7).value
+        if nome_origem is not None:
+                nome_origem = nome_origem.lower()
+        status_direito = sheet_selecionada_internas.cell(row=linha, column=32).value
+        status = sheet_selecionada_internas.cell(row=linha, column=28).value
+        for linha_lote in range(2, planilha_lote.max_row + 1):
+            nome_destino = planilha_lote.cell(row=linha_lote, column=7).value
+            if nome_destino is not None:
+                nome_destino = nome_destino.lower()
+             
+
+            if  nome_origem == nome_destino and status == "Não Analisada":
+                planilha_lote.cell(row=linha_lote, column=28).value = "Não Analisada"
+            elif nome_origem == nome_destino and status == "Pendência":
+                planilha_lote.cell(row=linha_lote, column=28).value = "Pendência"
+            elif nome_origem == nome_destino and status == "Revisão":
+                planilha_lote.cell(row=linha_lote, column=28).value = "Revisão"
+            elif nome_origem == nome_destino and  status_direito is None:
+                planilha_lote.cell(row=linha_lote, column=28).value = "Para Subir"       
+            
+    df = pd.read_excel(r'Lote_Requerimento_' + str(contador) + '.xlsx')
+    contagem_nomes = df.groupby('Nome_Beneficiario').size().reset_index(name='quantidade')
+
+    contagem_nomes.columns = ['nome','quantidade']
+    nomes_repetidos = contagem_nomes[contagem_nomes['quantidade'] > 1]['nome'].tolist()
+
+    for linha_lote in range(2,planilha_lote.max_row + 1):
+        nome_lote = planilha_lote.cell(row=linha_lote,column=7).value
+        if nome_lote in nomes_repetidos:
+            planilha_lote.cell(row=linha_lote,column=28).value = 'Nome Duplicado'
+
+    planilhaLote.save(filename = caminho_lote)
+    print(caminho_lote)
+    contador = contador + 1
+    if contador == 692:
+        contador = contador + 1
+    print(i)
+
+
+ 
+planilhaCAMPOR1.save(filename = caminho_CAMPOR1)
+print('CAMPOR1 salva com sucesso')
+
+planilhaINTERNAR1.save(filename = caminho_INTERNAR1)
+print('INTERNAR1 salva com sucesso')
+
+planilhaCAMPOR2.save(filename = caminho_CAMPOR2)
+print('CAMPOR2 salva com sucesso')
+
+planilhaINTERNAR2.save(filename = caminho_INTERNAR2)
+print('INTERNAR2 salva com sucesso')
+
+planilhaCAMPOR3.save(filename = caminho_CAMPOR3)
+print('CAMPOR3 salva com sucesso')
+
+planilhaINTERNAR3.save(filename = caminho_INTERNAR3)
+print('INTERNAR3 salva com sucesso')
+
+planilhaCAMPOR4.save(filename = caminho_CAMPOR4)
+print('CAMPOR4 salva com sucesso')
+
+planilhaINTERNAR4.save(filename = caminho_INTERNAR4)
+print('INTERNAR4 salva com sucesso')
+
+planilhaCAMPOR5.save(filename = caminho_CAMPOR5)
+print('CAMPOR5 salva com sucesso')
+
+planilhaINTERNAR5.save(filename = caminho_INTERNAR5)
+print('INTERNAR5 salva com sucesso')
+
+
+print('Lote salvo com sucesso')
+
+print('Concluído com sucesso')
+
+
+
