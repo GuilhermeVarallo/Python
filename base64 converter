@@ -1,3 +1,4 @@
+
 import base64
 import json
 import os 
@@ -13,27 +14,29 @@ for nome_arquivo in os.listdir(pasta):
     if nome_arquivo.endswith('.json'):  # Filtrar apenas arquivos .json
         caminho_completo = os.path.join(pasta, nome_arquivo)
 
-        # Abrir e carregar o JSON com a codificação utf-8
+        # Abrir o arquivo e ler o conteúdo como string
         with open(caminho_completo, 'r', encoding='utf-8') as file:
-            dados = json.load(file)
-            json_data = dados
+            dados_str = file.read()
+
+        # Carregar os dados JSON
+        dados = json.loads(dados_str)
 
         # Extrair os campos necessários
-        beneficiario_id = json_data['result']['beneficiarioId']
-        arquivo_base64 = json_data['result']['arquivoBase64']
-        tipo = json_data['result']['tipo']
-        subtipo = json_data['result']['subTipo']
-        id = json_data['result']['id']
+        beneficiario_id = dados['result']['beneficiarioId']
+        arquivo_base64 = dados['result']['arquivoBase64']
+        tipo = dados['result']['tipo']
+        subtipo = dados['result']['subTipo']
+        id = dados['result']['id']
 
         # Decodificar o Base64
         arquivo_bytes = base64.b64decode(arquivo_base64)
 
         # Limpar o nome do arquivo para remover caracteres inválidos
-        nome_arquivo_salvo = f"{tipo} {subtipo} + {beneficiario_id} + {id}.pdf"
+        nome_arquivo_salvo = f"{tipo}+{subtipo}+{beneficiario_id}+{id}.jpg"
         nome_arquivo_salvo = limpar_nome_arquivo(nome_arquivo_salvo)
         caminho_arquivo_salvo = os.path.join(pasta, nome_arquivo_salvo)
 
-        
+        # Salvar o arquivo
         with open(caminho_arquivo_salvo, "wb") as file:
             file.write(arquivo_bytes)
 
